@@ -62,6 +62,12 @@ function Menu() {
 			url: "/memories",
 			disabled: false,
 		},
+		{
+			icon: CanvasIcon,
+			text: "Thinkpad",
+			url: "/thinkpad",
+			disabled: false,
+		},
 	];
 
 	const [content, setContent] = useState("");
@@ -76,9 +82,11 @@ function Menu() {
 			content.match(/https?:\/\/(x\.com|twitter\.com)\/[\w]+\/[\w]+\/[\d]+/)
 		) {
 			return "tweet";
-		} else if (content.match(/https?:\/\/[\w\.]+/)) {
-			return "page";
-		} else if (content.match(/https?:\/\/www\.[\w\.]+/)) {
+		} else if (
+			content.match(
+				/^(https?:\/\/)?(www\.)?[a-z0-9]+([-.]{1}[a-z0-9]+)*\.[a-z]{2,5}(\/.*)?$/i,
+			)
+		) {
 			return "page";
 		} else {
 			return "note";
@@ -176,7 +184,7 @@ function Menu() {
 					</div>
 				</div>
 
-				<DialogContent className="sm:max-w-[475px] text-[#F2F3F5] rounded-2xl bg-background z-[39] backdrop-blur-md">
+				<DialogContent className="sm:max-w-[475px] text-[#F2F3F5] rounded-2xl bg-background z-[39]">
 					<form
 						action={async (e: FormData) => {
 							const content = e.get("content")?.toString();

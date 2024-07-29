@@ -8,26 +8,24 @@ import { Switch } from "@repo/ui/shadcn/switch";
 import { Label } from "@repo/ui/shadcn/label";
 
 function QueryInput({
-	setQueryPresent,
-	initialQuery,
 	initialSpaces,
 	handleSubmit,
+	query,
+	setQuery,
 }: {
-	setQueryPresent: (t: boolean) => void;
 	initialSpaces?: {
 		id: number;
 		name: string;
 	}[];
-	initialQuery?: string;
 	mini?: boolean;
 	handleSubmit: (
 		q: string,
 		spaces: { id: number; name: string }[],
 		proMode: boolean,
 	) => void;
+	query: string;
+	setQuery: (q: string) => void;
 }) {
-	const [q, setQ] = useState(initialQuery || "");
-
 	const [proMode, setProMode] = useState(false);
 
 	const [selectedSpaces, setSelectedSpaces] = useState<
@@ -42,11 +40,11 @@ function QueryInput({
 				{/* input and action button */}
 				<form
 					action={async () => {
-						if (q.trim().length === 0) {
+						if (query.trim().length === 0) {
 							return;
 						}
-						handleSubmit(q, selectedSpaces, proMode);
-						setQ("");
+						handleSubmit(query, selectedSpaces, proMode);
+						setQuery("");
 					}}
 				>
 					<textarea
@@ -54,25 +52,20 @@ function QueryInput({
 						name="q"
 						cols={30}
 						rows={3}
-						className="bg-transparent text-lg placeholder:text-[#9B9B9B] text-gray-200 tracking-[3%] outline-none resize-none w-full p-7"
+						className={`bg-transparent text-lg placeholder:text-[#9B9B9B] text-gray-200 tracking-[3%] outline-none resize-none w-full py-4 px-4 h-32 transition-[height] ${query.length > 0 && "h-40"}`}
 						placeholder="Ask your second brain..."
 						onKeyDown={(e) => {
 							if (e.key === "Enter" && !e.shiftKey) {
 								e.preventDefault();
-								if (q.trim().length === 0) {
+								if (query.trim().length === 0) {
 									return;
 								}
-								handleSubmit(q, selectedSpaces, proMode);
-								setQ("");
+								handleSubmit(query, selectedSpaces, proMode);
+								setQuery("");
 							}
 						}}
-						onChange={(e) =>
-							setQ((prev) => {
-								setQueryPresent(!!e.target.value.length);
-								return e.target.value;
-							})
-						}
-						value={q}
+						onChange={(e) => setQuery(e.target.value)}
+						value={query}
 					/>
 					<div className="flex p-2 px-3 w-full items-center justify-between rounded-xl overflow-hidden">
 						<FilterSpaces
@@ -81,8 +74,8 @@ function QueryInput({
 							initialSpaces={initialSpaces || []}
 						/>
 						<div className="flex items-center gap-4">
-							<div className="flex items-center gap-2">
-								<Label htmlFor="pro-mode" className="text-sm text-[#9B9B9B]">
+							<div className="flex items-center gap-2 p-2 rounded-lg bg-[#369DFD1A]">
+								<Label htmlFor="pro-mode" className="text-sm">
 									Pro mode
 								</Label>
 								<Switch
